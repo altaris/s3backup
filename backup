@@ -1,0 +1,119 @@
+#!/bin/sh
+
+# ==============================================================================
+# Utilities
+# ==============================================================================
+
+_fatal() {
+    echo "ERROR:" "$@" >&2
+    exit 1
+}
+
+_fail() {
+    _fatal "Last command failed, exiting"
+}
+
+_require_variable() {
+    if [ -z "$1" ]; then
+        _fatal "Value for environment variable \"$2\" missing"
+    fi
+}
+
+
+# ==============================================================================
+# rclone
+# ==============================================================================
+
+# Credits to https://gist.github.com/earthgecko/3089509
+_random_string() {
+    # shellcheck disable=SC2002
+    cat /dev/urandom        | \
+        tr -dc 'a-zA-Z0-9'  | \
+        fold -w "$1"        | \
+        head -n 1
+}
+
+RCLONE_PASSWORD=$(_random_string 32)
+RCLONE_PORT=8888
+RCLONE_USER=$(_random_string 32)
+
+rclone_configure() {
+    _require_variable "$S3_ACCESS_KEY" S3_ACCESS_KEY
+    _require_variable "$S3_ENDPOINT" S3_ENDPOINT
+    _require_variable "$S3_REGION" S3_REGION
+    _require_variable "$S3_SECRET_KEY" S3_SECRET_KEY
+    rclone config create s3 s3              \
+        access_key_id "$S3_ACCESS_KEY"      \
+        acl private                         \
+        endpoint "$S3_ENDPOINT"             \
+        env_auth false                      \
+        force_path_style false              \
+        region "$S3_REGION"                 \
+        secret_access_key "$S3_SECRET_KEY"  \
+        || _fail
+}
+
+rclone_start() {
+    _require_variable "$S3_PATH" S3_PATH
+    rclone serve restic                 \
+        --addr localhost:"$RCLONE_PORT" \
+        --user "$RCLONE_USER"           \
+        --pass "$RCLONE_PASSWORD"       \
+        s3:"$S3_PATH" &
+}
+
+# ==============================================================================
+# restic
+# ==============================================================================
+
+export RESTIC_PASSWORD
+export RESTIC_REPOSITORY="rest:http://$RCLONE_USER:$RCLONE_PASSWORD@localhost:$RCLONE_PORT"
+
+# ==============================================================================
+# main
+# ==============================================================================
+
+backup() {
+    ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
+    restic backup "$ROOTFS_PATH"
+}
+
+help() {
+    echo "Usage: $0 [command]
+
+Available commands:
+    backup          Backups the volume to the restic repository
+    help            Prints this message and exit
+    init            Inits the restic repository
+    restore [id]    Empties the volume (!), and restores snapshot [id]
+    snapshots       Lists available snapshots
+"
+}
+
+init() {
+    restic init
+}
+
+restore() {
+    ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
+    SNAPSHOT_ID="${1:-latest}"
+    for ITEM in "$ROOTFS_PATH"/*; do rm -rf "$ITEM"; done
+    restic restore "$SNAPSHOT_ID"   \
+        --path "$ROOTFS_PATH"       \
+        --target /
+}
+
+snapshots() {
+    restic snapshots
+}
+
+COMMAND=$1
+case $COMMAND in
+    backup|init|restore|snapshots)
+        shift
+        $COMMAND "$@"
+        ;;
+    *)
+        help
+        ;;
+esac
