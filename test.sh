@@ -5,7 +5,7 @@
 
 sudo docker run                              \
     --rm -it                                 \
-    --volume "$DATA_VOLUME":/rootfs:ro       \
+    --volume "$DATA_VOLUME":/rootfs          \
     --env RESTIC_PASSWORD="$RESTIC_PASSWORD" \
     --env S3_ACCESS_KEY="$S3_ACCESS_KEY"     \
     --env S3_ENDPOINT="$S3_ENDPOINT"         \
