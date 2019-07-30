@@ -37,9 +37,10 @@ RCLONE_PASSWORD=$(_random_string 32)
 RCLONE_PORT=8888
 RCLONE_USER=$(_random_string 32)
 
-rclone_configure() {
+rclone_start() {
     _require_variable "$S3_ACCESS_KEY" S3_ACCESS_KEY
     _require_variable "$S3_ENDPOINT" S3_ENDPOINT
+    _require_variable "$S3_PATH" S3_PATH
     _require_variable "$S3_REGION" S3_REGION
     _require_variable "$S3_SECRET_KEY" S3_SECRET_KEY
     rclone config create s3 s3              \
@@ -51,10 +52,6 @@ rclone_configure() {
         region "$S3_REGION"                 \
         secret_access_key "$S3_SECRET_KEY"  \
         || _fail
-}
-
-rclone_start() {
-    _require_variable "$S3_PATH" S3_PATH
     rclone serve restic                 \
         --addr localhost:"$RCLONE_PORT" \
         --user "$RCLONE_USER"           \
@@ -75,6 +72,7 @@ export RESTIC_REPOSITORY="rest:http://$RCLONE_USER:$RCLONE_PASSWORD@localhost:$R
 
 backup() {
     ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
+    rclone_start
     restic backup "$ROOTFS_PATH"
 }
 
@@ -91,6 +89,7 @@ Available commands:
 }
 
 init() {
+    rclone_start
     restic init
 }
 
@@ -98,12 +97,14 @@ restore() {
     ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
     SNAPSHOT_ID="${1:-latest}"
     for ITEM in "$ROOTFS_PATH"/*; do rm -rf "$ITEM"; done
+    rclone_start
     restic restore "$SNAPSHOT_ID"   \
         --path "$ROOTFS_PATH"       \
         --target /
 }
 
 snapshots() {
+    rclone_start
     restic snapshots
 }
 
