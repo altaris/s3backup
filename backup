@@ -56,7 +56,7 @@ rclone_start() {
         --addr localhost:"$RCLONE_PORT" \
         --user "$RCLONE_USER"           \
         --pass "$RCLONE_PASSWORD"       \
-        s3:"$S3_PATH" &
+        s3:"$S3_PATH" || _fail &
     sleep 1
 }
 
@@ -74,8 +74,8 @@ export RESTIC_REPOSITORY="rest:http://$RCLONE_USER:$RCLONE_PASSWORD@localhost:$R
 backup() {
     ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
     rclone_start
-    restic backup "$ROOTFS_PATH"
-    restic forget --keep-within "${RESTIC_DURATION:-10y}"
+    restic backup "$ROOTFS_PATH" || _fail
+    restic forget --keep-within "${RESTIC_DURATION:-10y}" || _fail
 }
 
 help() {
@@ -92,22 +92,23 @@ Available commands:
 
 init() {
     rclone_start
-    restic init
+    restic init || _fail
 }
 
 restore() {
     ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
     SNAPSHOT_ID="${1:-latest}"
-    for ITEM in "$ROOTFS_PATH"/*; do rm -rf "$ITEM"; done
+    for ITEM in "$ROOTFS_PATH"/*; do rm -rf "$ITEM" || _fail; done
     rclone_start
     restic restore "$SNAPSHOT_ID"   \
         --path "$ROOTFS_PATH"       \
-        --target /
+        --target /                  \
+        || _fail
 }
 
 snapshots() {
     rclone_start
-    restic snapshots
+    restic snapshots || _fail
 }
 
 COMMAND=$1
