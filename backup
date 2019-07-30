@@ -51,12 +51,13 @@ rclone_start() {
         force_path_style false              \
         region "$S3_REGION"                 \
         secret_access_key "$S3_SECRET_KEY"  \
-        || _fail
-    rclone serve restic                 \
+        > /dev/null || _fail
+    rclone serve restic           \
         --addr localhost:"$RCLONE_PORT" \
         --user "$RCLONE_USER"           \
         --pass "$RCLONE_PASSWORD"       \
         s3:"$S3_PATH" &
+    sleep 1
 }
 
 # ==============================================================================
