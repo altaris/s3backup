@@ -18,4 +18,5 @@ COPY backup /app/
 
 # Initial state
 WORKDIR /
-CMD backup
+ENTRYPOINT ["backup"]
+CMD [""]

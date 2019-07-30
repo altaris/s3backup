@@ -4,7 +4,7 @@
 . ./secret.env
 
 sudo docker run                              \
-    --rm -it                                    \
+    --rm -it                                 \
     --volume "$DATA_VOLUME":/rootfs:ro       \
     --env RESTIC_PASSWORD="$RESTIC_PASSWORD" \
     --env S3_ACCESS_KEY="$S3_ACCESS_KEY"     \
@@ -12,4 +12,4 @@ sudo docker run                              \
     --env S3_PATH="$S3_PATH"                 \
     --env S3_REGION="$S3_REGION"             \
     --env S3_SECRET_KEY="$S3_SECRET_KEY"     \
-    s3backup:"$(git rev-parse --abbrev-ref HEAD)" backup "$@"
+    s3backup:"$(git rev-parse --abbrev-ref HEAD)" "$@"
