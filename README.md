@@ -10,13 +10,14 @@ storage using [`restic`](https://restic.readthedocs.io/en/latest/) and
 ```sh
 docker run                                                          \
     --rm                                                            \
-    --volume datavolume:/rootfs                                     \
+    --volume datavolume:/rootfs:ro                                  \
     --env RESTIC_PASSWORD="passw0rd"                                \
     --env S3_ACCESS_KEY="XXXYYYYYYYYYYYYYY"                         \
     --env S3_ENDPOINT="po.ta.to"                                    \
+    --env S3_PATH="bucket/folder"                                   \
     --env S3_REGION="us-east-1"                                     \
-    --env S3_SECRET_KEY ="1111111-2222-3333-44444-55555555555555"   \
-    altaris/s3backup backup
+    --env S3_SECRET_KEY="1111111-2222-3333-44444-55555555555555"    \
+    altaris/s3backup backup backup
 ```
 
 # Environment variables
