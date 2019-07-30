@@ -75,6 +75,7 @@ backup() {
     ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
     rclone_start
     restic backup "$ROOTFS_PATH"
+    restic forget --keep-within "${RESTIC_DURATION:-10y}"
 }
 
 help() {

@@ -22,6 +22,9 @@ docker run                                                          \
 
 # Environment variables
 
+* `RESTIC_DURATION` (default: `10y`): Duration for which backups should be
+  kept, see
+  [here](https://restic.readthedocs.io/en/latest/060_forget.html#removing-snapshots-according-to-a-policy).
 * `RESTIC_PASSWORD`: Password of the `restic` repository.
 * `ROOTFS_PATH` (default: `/rootfs`): Absolute path where the volume is
   mounted.
