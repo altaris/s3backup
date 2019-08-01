@@ -74,6 +74,7 @@ export RESTIC_REPOSITORY="rest:http://$RCLONE_USER:$RCLONE_PASSWORD@localhost:$R
 backup() {
     ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
     rclone_start
+    restic init
     restic backup "$ROOTFS_PATH" || _fail
     restic forget --keep-within "${RESTIC_DURATION:-10y}" || _fail
 }
