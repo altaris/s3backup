@@ -33,6 +33,7 @@ _random_string() {
         head -n 1
 }
 
+RCLONE_MAX_TRY=5
 RCLONE_PASSWORD=$(_random_string 32)
 RCLONE_PORT=8888
 RCLONE_USER=$(_random_string 32)
@@ -58,6 +59,16 @@ rclone_start() {
         --pass "$RCLONE_PASSWORD"       \
         s3:"$S3_PATH" || _fail &
     sleep 1
+    for i in $(seq 1 "$RCLONE_MAX_TRY"); do
+        echo "Attempting to connect to local rclone server ($i/$RCLONE_MAX_TRY)"
+        restic snapshots > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            return 0
+        else
+            sleep 2
+        fi
+    done
+    _fatal "rclone server didn't start"
 }
 
 # ==============================================================================
