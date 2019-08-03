@@ -22,6 +22,8 @@ docker run                                                          \
 
 # Environment variables
 
+* `RCLONE_MAX_TRY` (default: `5`): Number of attempts to connect to container
+  `rclone` server; set this to higher values on slower systems.
 * `RESTIC_DURATION` (default: `10y`): Duration for which backups should be
   kept, see
   [here](https://restic.readthedocs.io/en/latest/060_forget.html#removing-snapshots-according-to-a-policy).

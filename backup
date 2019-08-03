@@ -33,7 +33,7 @@ _random_string() {
         head -n 1
 }
 
-RCLONE_MAX_TRY=5
+RCLONE_MAX_TRY="${RCLONE_MAX_TRY:-5}"
 RCLONE_PASSWORD=$(_random_string 32)
 RCLONE_PORT=8888
 RCLONE_USER=$(_random_string 32)
@@ -61,14 +61,13 @@ rclone_start() {
     sleep 1
     for i in $(seq 1 "$RCLONE_MAX_TRY"); do
         echo "Attempting to connect to local rclone server ($i/$RCLONE_MAX_TRY)"
-        restic snapshots > /dev/null 2>&1
-        if [ $? -eq 0 ]; then
+        if restic snapshots > /dev/null 2>&1; then
             return 0
         else
             sleep 2
         fi
     done
-    _fatal "rclone server didn't start"
+    _fatal "rclone server didn't start within $RCLONE_MAX_TRY tries, aborting"
 }
 
 # ==============================================================================
