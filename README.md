@@ -1,6 +1,9 @@
 s3backup
 ========
 
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/altaris/s3backup)](https://hub.docker.com/r/altaris/s3backup/)
+[![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
+
 This docker image performs incremental backups of a given volume to an s3
 storage using [`restic`](https://restic.readthedocs.io/en/latest/) and
 [`rclone`](https://rclone.org/).
