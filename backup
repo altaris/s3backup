@@ -58,6 +58,11 @@ rclone_start() {
         --user "$RCLONE_USER"           \
         --pass "$RCLONE_PASSWORD"       \
         s3:"$S3_PATH" || _fail &
+    if [ "$1" = "no_check_rclone" ]; then
+        echo "Not pinging rclone, waiting 5s"
+        sleep 5
+        return 0
+    fi
     sleep 1
     for i in $(seq 1 "$RCLONE_MAX_TRY"); do
         echo "Attempting to connect to local rclone server ($i/$RCLONE_MAX_TRY)"
@@ -102,7 +107,7 @@ Available commands:
 }
 
 init() {
-    rclone_start
+    rclone_start "no_check_rclone"
     restic init || _fail
 }
 
