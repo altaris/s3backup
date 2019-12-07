@@ -10,7 +10,7 @@ RUN apk add                                                             \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/main         \
     --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing      \
     --update                                                            \
-    ca-certificates restic=0.9.5-r0 rclone=1.48.0-r0
+    ca-certificates restic rclone
 
 # Setup executables
 ENV PATH /app:$PATH
