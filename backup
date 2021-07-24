@@ -100,6 +100,7 @@ Available commands:
     backup          Backups the volume to the restic repository
     help            Prints this message and exit
     init            Inits the restic repository
+    restic [cmd]    Executes a restic command
     restore [id]    Empties the volume (!), and restores snapshot [id]
     snapshots       Lists available snapshots
 "
@@ -108,6 +109,12 @@ Available commands:
 init() {
     rclone_start "no_check_rclone"
     restic init || _fail
+}
+
+restic_cmd() {
+    ROOTFS_PATH="${ROOTFS_PATH:-/rootfs}"
+    rclone_start
+    restic "$@" || _fail
 }
 
 restore() {
@@ -131,6 +138,10 @@ case $COMMAND in
     backup|init|restore|snapshots)
         shift
         $COMMAND "$@"
+        ;;
+    restic)
+        shift
+        restic_cmd "$@"
         ;;
     *)
         help
