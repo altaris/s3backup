@@ -1,14 +1,15 @@
-s3backup
-========
+# s3backup
 
-[![Docker Build Status](https://img.shields.io/docker/cloud/build/altaris/s3backup)](https://hub.docker.com/r/altaris/s3backup/)
-[![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
+[![Docker Build
+Status](https://img.shields.io/docker/cloud/build/altaris/s3backup)](https://hub.docker.com/r/altaris/s3backup/)
+[![MIT
+License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
 This docker image performs incremental backups of a given volume to an s3
 storage using [`restic`](https://restic.readthedocs.io/en/latest/) and
 [`rclone`](https://rclone.org/).
 
-# Quickstart
+## Quickstart
 
 ```sh
 docker run                                                          \
@@ -23,7 +24,7 @@ docker run                                                          \
     altaris/s3backup backup
 ```
 
-# Environment variables
+## Environment variables
 
 * `RCLONE_MAX_TRY` (default: `5`): Number of attempts to connect to container
   `rclone` server; set this to higher values on slower systems.
@@ -38,3 +39,5 @@ docker run                                                          \
 * `S3_REGION`: S3 region.
 * `S3_SECRET_KEY`: S3 secret key.
 * `S3_PATH`: Path of the `restic` repository, e.g. `bucket/foo`.
+* `S3_PROVIDER` (default: `AWS`): Any S3 provided supported by `rclone`, see
+  [here](https://rclone.org/s3/).

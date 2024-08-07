@@ -44,6 +44,10 @@ rclone_start() {
     _assert_set "$S3_PATH" S3_PATH
     _assert_set "$S3_REGION" S3_REGION
     _assert_set "$S3_SECRET_KEY" S3_SECRET_KEY
+    if [ -z "${S3_PROVIDER}" ]; then
+        S3_PROVIDER="AWS"
+        echo "S3_PROVIDER not set, defaulting to '$S3_PROVIDER'"
+    fi
     rclone config create s3 s3              \
         access_key_id "$S3_ACCESS_KEY"      \
         acl private                         \
@@ -52,6 +56,7 @@ rclone_start() {
         force_path_style false              \
         region "$S3_REGION"                 \
         secret_access_key "$S3_SECRET_KEY"  \
+        provider "$S3_PROVIDER"             \
         > /dev/null || _fail
     rclone serve restic                 \
         --addr localhost:"$RCLONE_PORT" \
