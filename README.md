@@ -21,7 +21,7 @@ docker run                                                          \
     --env S3_PATH="bucket/folder"                                   \
     --env S3_REGION="us-east-1"                                     \
     --env S3_SECRET_KEY="1111111-2222-3333-44444-55555555555555"    \
-    altaris/s3backup backup
+    altaris/s3backup:amd64 backup
 ```
 
 ## Environment variables
