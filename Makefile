@@ -12,7 +12,7 @@ build-amd64:
 	$(SUDO) docker build -f Dockerfile -t $(USER)/$(IMAGE):latest --platform linux/amd64 .
 
 build-arm32v7:
-	$(SUDO) docker build -f Dockerfile.arm32v7 -t $(USER)/$(IMAGE):arm32v7 --platform linux/arm32v7 .
+	$(SUDO) docker build -f Dockerfile.arm32v7 -t $(USER)/$(IMAGE):arm32v7 --platform linux/arm/v7 .
 
 build-arm64:
 	$(SUDO) docker build -f Dockerfile -t $(USER)/$(IMAGE):arm64 --platform linux/arm64 .
