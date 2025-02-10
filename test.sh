@@ -22,4 +22,4 @@ sudo docker run                                      \
     --env S3_REGION="$S3_REGION"                     \
     --env S3_SECRET_KEY="$S3_SECRET_KEY"             \
     --privileged \
-    altaris/s3backup:arm64 "$@"
+    s3backup-dev:local "$@"
