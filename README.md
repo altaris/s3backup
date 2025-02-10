@@ -26,18 +26,20 @@ docker run                                                          \
 
 ## Environment variables
 
-* `RCLONE_MAX_TRY` (default: `5`): Number of attempts to connect to container
+- `RCLONE_EXTRA_CONFIG` (default: empty): Extra configuration for `rclone`. For
+  example, for a Scaleway endpoint, you might want to set it to `acl private env_auth false`.
+- `RCLONE_MAX_TRY` (default: `5`): Number of attempts to connect to container
   `rclone` server; set this to higher values on slower systems.
-* `RESTIC_DURATION` (default: `10y`): Duration for which backups should be
+- `RESTIC_DURATION` (default: `10y`): Duration for which backups should be
   kept, see
   [here](https://restic.readthedocs.io/en/latest/060_forget.html#removing-snapshots-according-to-a-policy).
-* `RESTIC_PASSWORD`: Password of the `restic` repository.
-* `ROOTFS_PATH` (default: `/rootfs`): Absolute path where the volume is
+- `RESTIC_PASSWORD`: Password of the `restic` repository.
+- `ROOTFS_PATH` (default: `/rootfs`): Absolute path where the volume is
   mounted.
-* `S3_ACCESS_KEY`: S3 access key.
-* `S3_ENDPOINT`: S3 endpoint.
-* `S3_REGION`: S3 region.
-* `S3_SECRET_KEY`: S3 secret key.
-* `S3_PATH`: Path of the `restic` repository, e.g. `bucket/foo`.
-* `S3_PROVIDER` (default: `AWS`): Any S3 provided supported by `rclone`, see
+- `S3_ACCESS_KEY`: S3 access key.
+- `S3_ENDPOINT`: S3 endpoint.
+- `S3_REGION`: S3 region.
+- `S3_SECRET_KEY`: S3 secret key.
+- `S3_PATH`: Path of the `restic` repository, e.g. `bucket/foo`.
+- `S3_PROVIDER` (default: `AWS`): Any S3 provided supported by `rclone`, see
   [here](https://rclone.org/s3/).
