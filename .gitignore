@@ -1,2 +1,3 @@
 secret.env
 *.code-workspace
+test/

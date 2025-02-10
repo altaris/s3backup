@@ -108,12 +108,21 @@ Available commands:
     restic [cmd]    Executes a restic command
     restore [id]    Empties the volume (!), and restores snapshot [id]
     snapshots       Lists available snapshots
+    mount           Mounts the restic repository to /mnt/restic
+                    Mount the directory as '/mnt/point/in/host:/mnt/restic' and run the container as privileged
 "
 }
 
 init() {
     rclone_start "no_check_rclone"
     restic init || _fail
+}
+
+mount() {
+    MOUNT_PATH=/mnt/restic
+    mkdir -p "$MOUNT_PATH"
+    rclone_start
+    restic mount $MOUNT_PATH || _fail
 }
 
 restic_cmd() {
@@ -147,6 +156,9 @@ case $COMMAND in
     restic)
         shift
         restic_cmd "$@"
+        ;;
+    mount)
+        mount
         ;;
     *)
         help
