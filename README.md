@@ -1,9 +1,7 @@
 # s3backup
 
-[![Docker Build
-Status](https://img.shields.io/docker/cloud/build/altaris/s3backup)](https://hub.docker.com/r/altaris/s3backup/)
-[![MIT
-License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://choosealicense.com/licenses/mit/)
+[![DockerHub](https://img.shields.io/badge/Docker_image-blue?logo=docker)](https://hub.docker.com/r/altaris/s3backup)
 
 This docker image performs incremental backups of a given volume to an s3
 storage using [`restic`](https://restic.readthedocs.io/en/latest/) and
@@ -12,16 +10,16 @@ storage using [`restic`](https://restic.readthedocs.io/en/latest/) and
 ## Quickstart
 
 ```sh
-docker run                                                          \
-    --rm                                                            \
-    --volume datavolume:/rootfs:ro                                  \
-    --env RESTIC_PASSWORD="passw0rd"                                \
-    --env S3_ACCESS_KEY="XXXYYYYYYYYYYYYYY"                         \
-    --env S3_ENDPOINT="po.ta.to"                                    \
-    --env S3_PATH="bucket/folder"                                   \
-    --env S3_REGION="us-east-1"                                     \
-    --env S3_SECRET_KEY="1111111-2222-3333-44444-55555555555555"    \
-    altaris/s3backup:amd64 backup
+docker run                          \
+    --rm                            \
+    --volume your-volume:/rootfs:ro \
+    --env RESTIC_PASSWORD="..."     \
+    --env S3_ACCESS_KEY="..."       \
+    --env S3_ENDPOINT="po.ta.to"    \
+    --env S3_PATH="bucket/folder"   \
+    --env S3_REGION="us-east-1"     \
+    --env S3_SECRET_KEY="..."       \
+    altaris/s3backup backup
 ```
 
 ## Environment variables
@@ -43,3 +41,22 @@ docker run                                                          \
 - `S3_PATH`: Path of the `restic` repository, e.g. `bucket/foo`.
 - `S3_PROVIDER` (default: `AWS`): Any S3 provided supported by `rclone`, see
   [here](https://rclone.org/s3/).
+
+## Mount a restic repository
+
+This will mount the restic repository at `/mnt/restic`, and the latest snapshot
+will be available at `/mnt/restic/snapshots/latest/rootfs`.
+
+```sh
+sudo docker run                     \
+    --rm                            \
+    --env RESTIC_PASSWORD="..."     \
+    --env S3_ACCESS_KEY="..."       \
+    --env S3_ENDPOINT="po.ta.to"    \
+    --env S3_PATH="bucket/folder"   \
+    --env S3_REGION="us-east-1"     \
+    --env S3_SECRET_KEY="..."       \
+    --mount type=bind,src="$MOUNT_POINT",dst=/mnt/restic,bind-propagation=shared \
+    --privileged \
+    altaris/s3backup "$@"
+```
